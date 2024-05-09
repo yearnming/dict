@@ -29,6 +29,15 @@ builds:
   binary: '{{ .ProjectName }}'
   main: cmd/dict/main.go
 
+upx:
+  -
+    ids: [ default ]
+    enabled: true
+    goos: ["windows", "linux"]
+    goarch: ["amd64", "386"]
+    compress: best
+#    lzma: true
+#    brute: true
 archives:
 - format: zip
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ if eq .Os "darwin" }}macOS{{ else }}{{ .Os }}{{ end }}_{{ .Arch }}'
