@@ -17,7 +17,7 @@ type Options struct {
 	Length               string              // Length 关键词长度限制
 	Output               string              // Output 保存文件
 	OutputRule           string              // Output 保存规则文件
-	KeyWordLength        string              // KeyWordLength 关键词组合数量限制，两个关键词组合，三个关键词组合
+	KeyWordLength        int                 // KeyWordLength 关键词组合数量限制，两个关键词组合，三个关键词组合
 	Surname              goflags.StringSlice // Surname 姓氏
 	GivenName            goflags.StringSlice // GivenName  名
 	FirstLetterSurname   goflags.StringSlice // FirstLetterSurname 姓氏拼音首字母
@@ -60,7 +60,7 @@ func ParseOptions() *Options {
 		//flagSet.StringVarP(&options.KeyWord, "keyword", "key", "", "输入关键词"),
 		flagSet.StringVarP(&options.Rules, "rule", "r", "", "关键词组合规则"),
 		flagSet.StringVarP(&options.Length, "length", "l", "", "关键词长度限制"),
-		flagSet.StringVarP(&options.KeyWordLength, "KeyWordLength", "kwl", "3", "关键词组合数量限制，两个关键词组合，三个关键词组合"),
+		flagSet.IntVarP(&options.KeyWordLength, "KeyWordLength", "kwl", 3, "关键词组合数量限制，两个关键词组合，三个关键词组合"),
 	)
 	flagSet.CreateGroup("output", "输出",
 		flagSet.StringVarP(&options.Output, "output", "o", "", "保存文件"),
