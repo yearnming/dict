@@ -23,6 +23,9 @@ builds:
     - goos: windows
       goarch: 'arm64'
 
+  ldflags:
+    - -s -w
+
   binary: '{{ .ProjectName }}'
   main: cmd/dict/main.go
 
