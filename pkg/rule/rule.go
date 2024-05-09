@@ -20,9 +20,9 @@ type KeyWord struct {
 	City                 []string // City 城市
 }
 
-// 获取KeyWords中的存在值的字段名
-// 使用反射来检查 KeyWord 结构体中每个字段的值是否非空
-func fieldsWithValues(kw *KeyWord) []string {
+// FieldsWithValues 获取KeyWords中的存在值的字段名
+// FieldsWithValues 使用反射来检查 KeyWord 结构体中每个字段的值是否非空
+func FieldsWithValues(kw *KeyWord) []string {
 	var fieldNames []string
 	v := reflect.ValueOf(kw).Elem() // 获取reflect.Value，.Elem()获取指针指向的值
 	t := v.Type()
@@ -48,8 +48,23 @@ func SelectFixedLengthPermutations(keywords []string, length int, prefix []strin
 	}
 }
 
-// 删除包含重复元素的切片
-func removeSlicesWithDuplicates(slices [][]string) [][]string {
+// Deduplicate 去除重复元素
+func Deduplicate(slice []string) []string {
+	unique := make(map[string]bool)
+	var result []string
+
+	for _, v := range slice {
+		if _, ok := unique[v]; !ok {
+			unique[v] = true
+			result = append(result, v)
+		}
+	}
+
+	return result
+}
+
+// RemoveSlicesWithDuplicates 删除包含重复元素的二维切片 slices [][]string
+func RemoveSlicesWithDuplicates(slices [][]string) [][]string {
 	result := [][]string{}
 	seen := make(map[string]int) // 用于跟踪每个元素的出现次数
 
@@ -82,9 +97,9 @@ func removeSlicesWithDuplicates(slices [][]string) [][]string {
 	return result
 }
 
-// 将组合保存到文件
-func saveCombinationsToFiles(combinations [][]string) error {
-	file, err := os.Create("combinations.txt")
+// SaveCombinationsToFiles 二维切片保存文件 将组合保存到文件
+func SaveCombinationsToFiles(combinations [][]string) error {
+	file, err := os.Create("rules.txt")
 	if err != nil {
 		return err
 	}
@@ -94,6 +109,24 @@ func saveCombinationsToFiles(combinations [][]string) error {
 		// 将组合转换为字符串，并写入文件
 		comboStr := fmt.Sprintf("%v", combination)  // 将组合转换为字符串表示
 		_, err := file.WriteString(comboStr + "\n") // 写入组合并换行
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// SaveCombinationsToFile 保存切片到文件 将组合保存到文件
+func SaveCombinationsToFile(combinations []string) error {
+	file, err := os.Create("字典.txt")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	for _, combination := range combinations {
+		_, err := file.WriteString(combination + "\n")
 		if err != nil {
 			return err
 		}
@@ -262,24 +295,6 @@ func generatePermutations(keywords []string, k int, start int, current []string,
 		// 回溯，移除最后一个添加的关键词
 		current = current[:len(current)-1]
 	}
-}
-
-// 将组合保存到文件
-func saveCombinationsToFile(combinations []string) error {
-	file, err := os.Create("combinations.txt")
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	for _, combination := range combinations {
-		_, err := file.WriteString(combination + "\n")
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 // 5 的阶乘（表示为 5!）等于 5 × 4 × 3 × 2 × 1 = 120。
