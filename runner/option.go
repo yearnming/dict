@@ -113,6 +113,7 @@ func (options *Options) ValidateOptions() error {
 
 	if options.Connector == nil {
 		options.Keyboard = keyword.CollectSpecialChars()
+		gologger.Info().Msgf("使用特殊字符作为连接符: %v\n", options.Keyboard)
 	}
 
 	if options.Output == "" {

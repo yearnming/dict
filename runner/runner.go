@@ -34,7 +34,7 @@ func (r *Runner) Run() error {
 		Keyboard:             r.options.Keyboard,
 	}
 	keywords := rule.FieldsWithValues(key)
-	gologger.Info().Msgf("关键字数量: %v\n", keywords)
+	gologger.Info().Msgf("关键字一共有%d个: %v\n", len(keywords), keywords)
 	var rules [][]string
 	rule.SelectFixedLengthPermutations(keywords, 3, []string{}, &rules)
 	rules = rule.RemoveSlicesWithDuplicates(rules)

@@ -1,6 +1,7 @@
 package rule
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -30,6 +31,16 @@ func FieldsWithValues(kw *KeyWord) []string {
 		field := v.Field(i)
 		if field.Kind() == reflect.Slice && !field.IsNil() && field.Len() > 0 {
 			fieldNames = append(fieldNames, t.Field(i).Name)
+			// 打印字段名
+			fmt.Print(t.Field(i).Name, ": [")
+			// 打印前三个元素，如果没有那么多则打印实际的元素数量
+			for j := 0; j < field.Len() && j < 3; j++ {
+				fmt.Print(field.Index(j).Interface())
+				if j < 2 {
+					fmt.Print(", ")
+				}
+			}
+			fmt.Println("]")
 		}
 	}
 	return fieldNames
