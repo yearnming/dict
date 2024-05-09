@@ -2,9 +2,6 @@ package runner
 
 type Runner struct {
 	options *Options
-	//passiveAgent   *passive.Agent
-	//resolverClient *resolve.Resolver
-	//rateLimit      *subscraping.CustomRateLimit
 }
 
 func NewRunner(options *Options) (*Runner, error) {

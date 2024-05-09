@@ -3,6 +3,7 @@ module github.com/yearnming/dict
 go 1.21.5
 
 require (
+	github.com/mozillazg/go-pinyin v0.20.0
 	github.com/projectdiscovery/goflags v0.1.51
 	github.com/projectdiscovery/gologger v1.1.12
 )
