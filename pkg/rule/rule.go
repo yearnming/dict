@@ -46,10 +46,10 @@ func FieldsWithValues(kw *KeyWord) []string {
 			for j := 0; j < field.Len() && j < 3; j++ {
 				fmt.Print(field.Index(j).Interface())
 				if j < 2 {
-					fmt.Print(", ")
+					fmt.Print(",")
 				}
 			}
-			fmt.Println("]")
+			fmt.Println(",...]")
 		}
 	}
 	return fieldNames
