@@ -27,12 +27,21 @@ func FieldsWithValues(kw *KeyWord) []string {
 	v := reflect.ValueOf(kw).Elem() // 获取reflect.Value，.Elem()获取指针指向的值
 	t := v.Type()
 
+	// 计算字段名的最大长度
+	maxFieldLength := 0
+	for i := 0; i < v.NumField(); i++ {
+		if len(t.Field(i).Name) > maxFieldLength {
+			maxFieldLength = len(t.Field(i).Name)
+		}
+	}
+
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		if field.Kind() == reflect.Slice && !field.IsNil() && field.Len() > 0 {
 			fieldNames = append(fieldNames, t.Field(i).Name)
+			fieldName := fmt.Sprintf("%-*s", maxFieldLength, t.Field(i).Name)
 			// 打印字段名
-			fmt.Print(t.Field(i).Name, ": [")
+			fmt.Print("关键词: ", fieldName, " [")
 			// 打印前三个元素，如果没有那么多则打印实际的元素数量
 			for j := 0; j < field.Len() && j < 3; j++ {
 				fmt.Print(field.Index(j).Interface())
