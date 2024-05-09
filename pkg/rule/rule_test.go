@@ -5,65 +5,6 @@ import (
 	"testing"
 )
 
-func GenDir(key *KeyWord, rules [][]string) []string {
-	//combinations := make(map[string]int)
-	var combinations []string
-	// 遍历所有规则
-	for _, rule := range rules {
-		// 根据当前规则生成键
-		generateByRule(key, rule, "", &combinations)
-	}
-
-	return combinations
-}
-
-// generateByRule 根据给定的规则生成键
-func generateByRule(key *KeyWord, rule []string, prefix string, combinations *[]string) {
-	// 选择当前规则的第一个字段
-	firstField := rule[0]
-
-	// 根据字段类型选择对应的字符串数组
-	var strs []string
-	switch firstField {
-	case "Surname":
-		strs = key.Surname
-	case "GivenName":
-		strs = key.GivenName
-	case "FirstLetterSurname":
-		strs = key.FirstLetterSurname
-	case "FirstLetterGivenName":
-		strs = key.FirstLetterGivenName
-	case "Connector":
-		strs = key.Connector
-	case "WeakPass":
-		strs = key.WeakPass
-	case "Year":
-		strs = key.Year
-	case "Company":
-		strs = key.Company
-	case "Email":
-		strs = key.Email
-	case "Phone":
-		strs = key.Phone
-	case "City":
-		strs = key.City
-	default:
-		return // 无效的规则
-	}
-
-	// 对于数组中的每个字符串，递归生成后续规则的键
-	for _, str := range strs {
-		newPrefix := prefix + str
-		if len(rule) == 1 {
-			// 如果是最后一个字段，添加到结果中
-			*combinations = append(*combinations, newPrefix)
-			//(*combinations)[newPrefix] = 1
-		} else {
-			// 否则，递归处理剩余的规则
-			generateByRule(key, rule[1:], newPrefix, combinations)
-		}
-	}
-}
 func TestGenDir(t *testing.T) {
 	key := &KeyWord{
 		Surname:   []string{"li"},

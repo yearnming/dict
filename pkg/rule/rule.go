@@ -18,6 +18,7 @@ type KeyWord struct {
 	Email                []string // Email 邮箱
 	Phone                []string // Phone 电话
 	City                 []string // City 城市
+	Keyboard             []string // Keyboard 键盘弱密码
 }
 
 // FieldsWithValues 获取KeyWords中的存在值的字段名
@@ -45,6 +46,69 @@ func SelectFixedLengthPermutations(keywords []string, length int, prefix []strin
 	}
 	for _, keyword := range keywords {
 		SelectFixedLengthPermutations(keywords, length, append(prefix, keyword), combinations)
+	}
+}
+
+// GenDir 生成字典
+func GenDir(key *KeyWord, rules [][]string) []string {
+	//combinations := make(map[string]int)
+	var combinations []string
+	// 遍历所有规则
+	for _, rule := range rules {
+		// 根据当前规则生成键
+		generateByRule(key, rule, "", &combinations)
+	}
+
+	return combinations
+}
+
+// generateByRule 根据给定的规则生成键
+func generateByRule(key *KeyWord, rule []string, prefix string, combinations *[]string) {
+	// 选择当前规则的第一个字段
+	firstField := rule[0]
+
+	// 根据字段类型选择对应的字符串数组
+	var strs []string
+	switch firstField {
+	case "Surname":
+		strs = key.Surname
+	case "GivenName":
+		strs = key.GivenName
+	case "FirstLetterSurname":
+		strs = key.FirstLetterSurname
+	case "FirstLetterGivenName":
+		strs = key.FirstLetterGivenName
+	case "Connector":
+		strs = key.Connector
+	case "WeakPass":
+		strs = key.WeakPass
+	case "Year":
+		strs = key.Year
+	case "Company":
+		strs = key.Company
+	case "Email":
+		strs = key.Email
+	case "Phone":
+		strs = key.Phone
+	case "City":
+		strs = key.City
+	case "Keyboard":
+		strs = key.Keyboard
+	default:
+		return // 无效的规则
+	}
+
+	// 对于数组中的每个字符串，递归生成后续规则的键
+	for _, str := range strs {
+		newPrefix := prefix + str
+		if len(rule) == 1 {
+			// 如果是最后一个字段，添加到结果中
+			*combinations = append(*combinations, newPrefix)
+			//(*combinations)[newPrefix] = 1
+		} else {
+			// 否则，递归处理剩余的规则
+			generateByRule(key, rule[1:], newPrefix, combinations)
+		}
 	}
 }
 
