@@ -6,6 +6,8 @@ import (
 	"github.com/projectdiscovery/gologger"
 	"github.com/yearnming/dict/pkg/keyword"
 	"os"
+	"strconv"
+	"time"
 )
 
 type Options struct {
@@ -14,6 +16,7 @@ type Options struct {
 	Rules                string              // Rules 关键词组合规则
 	Length               string              // Length 关键词长度限制
 	Output               string              // Output 保存文件
+	OutputRule           string              // Output 保存规则文件
 	KeyWordLength        string              // KeyWordLength 关键词组合数量限制，两个关键词组合，三个关键词组合
 	Surname              goflags.StringSlice // Surname 姓氏
 	GivenName            goflags.StringSlice // GivenName  名
@@ -61,6 +64,7 @@ func ParseOptions() *Options {
 	)
 	flagSet.CreateGroup("output", "输出",
 		flagSet.StringVarP(&options.Output, "output", "o", "", "保存文件"),
+		flagSet.StringVarP(&options.OutputRule, "outputrule", "ol", "", "保存规则文件文件"),
 	)
 	flagSet.SetCustomHelpText("使用示例:\ngo run cmd/passfolder/main.go -dicttype wifi -keyword qwer -rule 3 -length 8-10")
 
@@ -109,6 +113,23 @@ func (options *Options) ValidateOptions() error {
 
 	if options.Connector == nil {
 		options.Keyboard = keyword.CollectSpecialChars()
+	}
+
+	if options.Output == "" {
+		// 获取当前时间戳
+		timestamp := time.Now().Unix()
+
+		// 将时间戳添加到文件名中，例如 "exampleDict_1673886400.txt"
+		timestampedFilename := "字典_" + strconv.FormatInt(timestamp, 10) + ".txt"
+		options.Output = timestampedFilename
+	}
+	if options.OutputRule == "" {
+		// 获取当前时间戳
+		timestamp := time.Now().Unix()
+
+		// 将时间戳添加到文件名中，例如 "exampleDict_1673886400.txt"
+		timestampedFilename := "生成规则_" + strconv.FormatInt(timestamp, 10) + ".txt"
+		options.OutputRule = timestampedFilename
 	}
 
 	return nil

@@ -17,7 +17,8 @@ func TestGenDir(t *testing.T) {
 	SelectFixedLengthPermutations(keywords, 3, []string{}, &rules)
 	rules = RemoveSlicesWithDuplicates(rules)
 	fmt.Printf("规则长度: %d\n", len(rules))
-	err := SaveCombinationsToFiles(rules)
+	filepathrule := "output.txt"
+	err := SaveCombinationsToFiles(rules, filepathrule)
 	if err != nil {
 		fmt.Println("保存组合规则失败:", err)
 	} else {
@@ -26,11 +27,12 @@ func TestGenDir(t *testing.T) {
 	combinations := GenDir(key, rules)
 	combinations = Deduplicate(combinations)
 	fmt.Printf("字典长度: %d\n", len(combinations))
-	err = SaveCombinationsToFile(combinations)
+	filepath := "output.txt"
+	err = SaveCombinationsToFile(combinations, filepath)
 	if err != nil {
 		fmt.Println("保存字典失败:", err)
 	} else {
-		fmt.Println("字典保存到 字典.txt")
+		fmt.Println("字典保存到 ", filepath)
 	}
 
 }
@@ -45,7 +47,8 @@ func TestGenerateDictionary(t *testing.T) {
 	var combinations [][]string
 	SelectFixedLengthPermutations(keywords, 3, []string{}, &combinations)
 	combinations = RemoveSlicesWithDuplicates(combinations)
-	err := SaveCombinationsToFiles(combinations)
+	filepathrule := "output.txt"
+	err := SaveCombinationsToFiles(combinations, filepathrule)
 	if err != nil {
 		fmt.Println("保存组合规则失败:", err)
 	} else {
@@ -73,7 +76,8 @@ func TestGeneratePermutations(t *testing.T) {
 	combinations = RemoveSlicesWithDuplicates(combinations)
 	//fmt.Println("After removal:", combinations)
 	fmt.Println("去除重复规则长度:", len(combinations))
-	err := SaveCombinationsToFiles(combinations)
+	filepathrule := "output.txt"
+	err := SaveCombinationsToFiles(combinations, filepathrule)
 	if err != nil {
 		fmt.Println("保存组合规则失败:", err)
 	} else {
@@ -114,7 +118,8 @@ func TestNameRule(t *testing.T) {
 	keywords := []string{"关键词1", "关键词2", "关键词3", "关键词4", "关键词5"}
 	combinations := generateCombinations(keywords, 3, 3)
 	fmt.Println("combinations长度:", len(combinations))
-	err := SaveCombinationsToFile(combinations)
+	filepath := "output.txt"
+	err := SaveCombinationsToFile(combinations, filepath)
 	if err != nil {
 		fmt.Println("组合规则保存失败:", err)
 	} else {

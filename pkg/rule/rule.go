@@ -1,8 +1,6 @@
 package rule
 
 import (
-	"fmt"
-	"os"
 	"reflect"
 )
 
@@ -110,93 +108,6 @@ func generateByRule(key *KeyWord, rule []string, prefix string, combinations *[]
 			generateByRule(key, rule[1:], newPrefix, combinations)
 		}
 	}
-}
-
-// Deduplicate 去除重复元素
-func Deduplicate(slice []string) []string {
-	unique := make(map[string]bool)
-	var result []string
-
-	for _, v := range slice {
-		if _, ok := unique[v]; !ok {
-			unique[v] = true
-			result = append(result, v)
-		}
-	}
-
-	return result
-}
-
-// RemoveSlicesWithDuplicates 删除包含重复元素的二维切片 slices [][]string
-func RemoveSlicesWithDuplicates(slices [][]string) [][]string {
-	result := [][]string{}
-	seen := make(map[string]int) // 用于跟踪每个元素的出现次数
-
-	// 遍历所有切片
-	for _, slice := range slices {
-		elementCounts := make(map[string]int) // 用于当前切片的元素计数
-		hasDuplicates := false                // 标记当前切片是否有重复元素
-
-		// 计算当前切片中每个元素的出现次数
-		for _, element := range slice {
-			elementCounts[element]++
-			if elementCounts[element] > 1 {
-				hasDuplicates = true // 发现重复元素
-				break
-			}
-		}
-
-		// 如果当前切片没有重复元素，加入结果切片
-		if !hasDuplicates {
-			result = append(result, slice)
-		}
-
-		// 更新全局的seen映射
-		for element, count := range elementCounts {
-			seen[element] += count
-		}
-	}
-
-	// 返回没有重复元素的切片
-	return result
-}
-
-// SaveCombinationsToFiles 二维切片保存文件 将组合保存到文件
-func SaveCombinationsToFiles(combinations [][]string) error {
-	file, err := os.Create("rules.txt")
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	for _, combination := range combinations {
-		// 将组合转换为字符串，并写入文件
-		comboStr := fmt.Sprintf("%v", combination)  // 将组合转换为字符串表示
-		_, err := file.WriteString(comboStr + "\n") // 写入组合并换行
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// SaveCombinationsToFile 保存切片到文件 将组合保存到文件
-func SaveCombinationsToFile(combinations []string) error {
-	file, err := os.Create("字典.txt")
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	for _, combination := range combinations {
-		_, err := file.WriteString(combination + "\n")
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 // --------------------------------------------------------使用上面的方法，下面的方法已淘汰--------------------------------------------------------
