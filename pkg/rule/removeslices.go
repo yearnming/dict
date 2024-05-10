@@ -15,7 +15,9 @@ func Deduplicate(slice []string) []string {
 	return result
 }
 
-// RemoveSlicesWithDuplicates 删除包含重复元素的二维切片 slices [][]string
+// RemoveSlicesWithDuplicates 函数是一个清理函数，它的输入参数是一个二维切片，其中每个元素是一个子切片。
+// 这个函数的作用是，找出那些子切片中存在有重复元素的子切片，并将它们从原切片中移除。
+// 函数的输出是一个新的二维切片，其中所有的子切片都不包含任何的重复元素。slices [][]string
 func RemoveSlicesWithDuplicates(slices [][]string) [][]string {
 	result := [][]string{}
 	seen := make(map[string]int) // 用于跟踪每个元素的出现次数
@@ -46,5 +48,43 @@ func RemoveSlicesWithDuplicates(slices [][]string) [][]string {
 	}
 
 	// 返回没有重复元素的切片
+	return result
+}
+
+// 对比两个切片是否相等
+func compareSlices(slice1, slice2 []string) bool {
+	if len(slice1) != len(slice2) {
+		return false
+	}
+	for i, v := range slice1 {
+		if v != slice2[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// RemoveDuplicateSlices 函数是一个清理函数，移除存在重复的子切片，它的输入参数是一个二维切片，其中每个元素是一个子切片。
+// 这个函数的作用是，找出存在有重复的子切片，并将它们从原切片中移除。
+// 函数的输出是一个新的二维切片，其中不会存在重复的子切片。slices [][]string
+func RemoveDuplicateSlices(slices [][]string) [][]string {
+	result := [][]string{}
+
+	for i, slice1 := range slices {
+		isDuplicate := false
+
+		for _, slice2 := range slices[i+1:] {
+			if compareSlices(slice1, slice2) {
+				isDuplicate = true
+				break
+			}
+		}
+
+		// 如果当前切片不是重复的，将它加入结果切片中
+		if !isDuplicate {
+			result = append(result, slice1)
+		}
+	}
+
 	return result
 }

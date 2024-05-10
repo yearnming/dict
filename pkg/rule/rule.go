@@ -69,8 +69,11 @@ func GenRulesLength(keywords []string, minLen, maxLen int) (combinations [][]str
 // 从给定的关键字列表中选择固定数量的关键字作为一个排列
 func SelectFixedLengthPermutations(keywords []string, length int, prefix []string, combinations *[][]string) {
 	if len(prefix) == length {
-		//fmt.Println(prefix)
-		*combinations = append(*combinations, prefix)
+		a := make([]string, len(prefix))
+		copy(a, prefix)
+		*combinations = append(*combinations, a)
+		// 如果使用下面一行代码 则需要使用 RemoveDuplicateSlices 函数，但还是会出现问题，在四个关键词来生成时，最后一个关键词会遗漏生成
+		//*combinations = append(*combinations, prefix)
 		return
 	}
 	for _, keyword := range keywords {

@@ -13,8 +13,9 @@ func TestGenDir(t *testing.T) {
 		Connector: []string{"@", ".", "#"},
 	}
 	keywords := FieldsWithValues(key)
-	var rules [][]string
-	SelectFixedLengthPermutations(keywords, 3, []string{}, &rules)
+	//var rules [][]string
+	//SelectFixedLengthPermutations(keywords, 3, []string{}, &rules)
+	rules := GenRulesLength(keywords, 3, 3)
 	rules = RemoveSlicesWithDuplicates(rules)
 	fmt.Printf("规则长度: %d\n", len(rules))
 	filepathrule := "output.txt"
@@ -22,7 +23,7 @@ func TestGenDir(t *testing.T) {
 	if err != nil {
 		fmt.Println("保存组合规则失败:", err)
 	} else {
-		fmt.Println("组合保存到 rules.txt")
+		fmt.Println("组合保存到 ", filepathrule)
 	}
 	combinations := GenDir(key, rules)
 	combinations = Deduplicate(combinations)

@@ -38,7 +38,9 @@ func (r *Runner) Run() error {
 	//var rules [][]string
 	//rule.SelectFixedLengthPermutations(keywords, r.options.KeyWordLength, []string{}, &rules)
 	rules := rule.GenRulesLength(keywords, r.options.KeyWordLengthMin, r.options.KeyWordLengthMax)
-	rules = rule.RemoveSlicesWithDuplicates(rules)
+	rules = rule.RemoveSlicesWithDuplicates(rules) // 所有的子切片都不包含任何的重复元素
+	// 以防万一出现 存在同一子切片的情况可使用下面一行代码
+	//rules = rule.RemoveDuplicateSlices(rules)
 	gologger.Info().Msgf("规则数量: %d\n", len(rules))
 	err := rule.SaveCombinationsToFiles(rules, r.options.OutputRule)
 	if err != nil {
