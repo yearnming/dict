@@ -6,6 +6,7 @@ import (
 	"github.com/projectdiscovery/gologger"
 	"github.com/yearnming/dict/pkg/keyword"
 	"os"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -13,11 +14,13 @@ import (
 type Options struct {
 	DictType             string              // DictType 输入字典类型
 	KeyWord              string              // KeyWord 输入关键词
-	Rules                string              // Rules 关键词组合规则
-	Length               string              // Length 关键词长度限制
+	Rules                string              // Rules 自定义关键词组合规则
+	Length               string              // Length 关键词长度限制，生成的密码长度
 	Output               string              // Output 保存文件
+	KeyWordLength        goflags.StringSlice // KeyWordLength 关键词规则数量限制，两个关键词组合，三个关键词组合
+	KeyWordLengthMin     int                 // KeyWordLength 关键词规则数量限制，最少
+	KeyWordLengthMax     int                 // KeyWordLength 关键词规则数量限制，最大
 	OutputRule           string              // Output 保存规则文件
-	KeyWordLength        int                 // KeyWordLength 关键词组合数量限制，两个关键词组合，三个关键词组合
 	Surname              goflags.StringSlice // Surname 姓氏
 	GivenName            goflags.StringSlice // GivenName  名
 	FirstLetterSurname   goflags.StringSlice // FirstLetterSurname 姓氏拼音首字母
@@ -58,15 +61,15 @@ func ParseOptions() *Options {
 	flagSet.CreateGroup("configuration", "配置",
 		flagSet.StringVarP(&options.DictType, "dicttype", "dt", "wifi", "输入字典类型"),
 		//flagSet.StringVarP(&options.KeyWord, "keyword", "key", "", "输入关键词"),
-		flagSet.StringVarP(&options.Rules, "rule", "r", "", "关键词组合规则"),
-		flagSet.StringVarP(&options.Length, "length", "l", "", "关键词长度限制"),
-		flagSet.IntVarP(&options.KeyWordLength, "KeyWordLength", "kwl", 3, "关键词组合数量限制，两个关键词组合，三个关键词组合"),
+		flagSet.StringVarP(&options.Rules, "rule", "r", "", "自定义关键词组合规则"),
+		flagSet.StringVarP(&options.Length, "length", "l", "", "关键词长度限制，生成的密码长度"),
+		flagSet.StringSliceVarP(&options.KeyWordLength, "KeyWordLength", "kwl", nil, "关键词规则数量限制，两个关键词组合，三个关键词组合", goflags.NormalizedStringSliceOptions),
 	)
 	flagSet.CreateGroup("output", "输出",
 		flagSet.StringVarP(&options.Output, "output", "o", "", "保存文件"),
 		flagSet.StringVarP(&options.OutputRule, "outputrule", "ol", "", "保存规则文件文件"),
 	)
-	flagSet.SetCustomHelpText("使用示例:\ngo run cmd/passfolder/main.go -dicttype wifi -keyword qwer -rule 3 -length 8-10")
+	flagSet.SetCustomHelpText("使用示例:\ngo run cmd/dict/main.go -chn 张大伟 -kwl 2,3")
 
 	if err := flagSet.Parse(); err != nil {
 		fmt.Println(err.Error())
@@ -133,5 +136,52 @@ func (options *Options) ValidateOptions() error {
 		options.OutputRule = timestampedFilename
 	}
 
+	if options.KeyWordLength == nil {
+		options.KeyWordLength = []string{"3"}
+	} else if len(options.KeyWordLength) == 2 {
+
+	} else {
+
+	}
+
+	// 判断KeyWordLength格式
+	switch true {
+	case options.KeyWordLength == nil:
+		options.KeyWordLength = []string{"3"}
+		break
+	case len(options.KeyWordLength) == 1:
+		if !isNumeric(options.KeyWordLength[0]) {
+			return fmt.Errorf("长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
+		} else {
+			num1, err1 := strconv.Atoi(options.KeyWordLength[0])
+			if err1 != nil {
+				return fmt.Errorf("长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
+			}
+			options.KeyWordLengthMin = num1
+			options.KeyWordLengthMax = num1
+		}
+		break
+	case len(options.KeyWordLength) == 2:
+		if isNumeric(options.KeyWordLength[0]) && isNumeric(options.KeyWordLength[1]) {
+			num1, err1 := strconv.Atoi(options.KeyWordLength[0])
+			num2, err2 := strconv.Atoi(options.KeyWordLength[1])
+			if err1 != nil || err2 != nil || num1 > num2 {
+				return fmt.Errorf("KeyWordLength长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
+			}
+			options.KeyWordLengthMin = num1
+			options.KeyWordLengthMax = num2
+		} else {
+			return fmt.Errorf("KeyWordLength长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
+		}
+	default:
+		return fmt.Errorf("KeyWordLength长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
+	}
+
 	return nil
+}
+
+func isNumeric(s string) bool {
+	// 正则表达式匹配一个或多个数字
+	re := regexp.MustCompile(`^\d+$`)
+	return re.MatchString(s)
 }

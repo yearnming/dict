@@ -55,7 +55,18 @@ func FieldsWithValues(kw *KeyWord) []string {
 	return fieldNames
 }
 
-// SelectFixedLengthPermutations 从给定的关键字列表中选择固定数量的关键字作为一个排列
+// GenRulesLength 根据给定的关键词数量个数来生成规则
+func GenRulesLength(keywords []string, minLen, maxLen int) (combinations [][]string) {
+	//var combinations [][]string
+	for i := minLen; i <= maxLen; i++ {
+		SelectFixedLengthPermutations(keywords, i, []string{}, &combinations)
+	}
+	//gologger.Info().Msgf("SelectFixedLengthPermutations 长度为: %d\n规则: %v", len(combinations), combinations)
+	return combinations
+}
+
+// SelectFixedLengthPermutations 规则生成 [][]string
+// 从给定的关键字列表中选择固定数量的关键字作为一个排列
 func SelectFixedLengthPermutations(keywords []string, length int, prefix []string, combinations *[][]string) {
 	if len(prefix) == length {
 		//fmt.Println(prefix)
@@ -67,7 +78,7 @@ func SelectFixedLengthPermutations(keywords []string, length int, prefix []strin
 	}
 }
 
-// GenDir 生成字典
+// GenDir 根据关键词生成字典 []string
 func GenDir(key *KeyWord, rules [][]string) []string {
 	//combinations := make(map[string]int)
 	var combinations []string
@@ -80,7 +91,7 @@ func GenDir(key *KeyWord, rules [][]string) []string {
 	return combinations
 }
 
-// generateByRule 根据给定的规则生成键
+// generateByRule 根据给定的规则和长度生成字典
 func generateByRule(key *KeyWord, rule []string, prefix string, combinations *[]string) {
 	// 选择当前规则的第一个字段
 	firstField := rule[0]

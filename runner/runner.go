@@ -35,8 +35,9 @@ func (r *Runner) Run() error {
 	}
 	keywords := rule.FieldsWithValues(key)
 	gologger.Info().Msgf("关键字一共有%d个: %v\n", len(keywords), keywords)
-	var rules [][]string
-	rule.SelectFixedLengthPermutations(keywords, r.options.KeyWordLength, []string{}, &rules)
+	//var rules [][]string
+	//rule.SelectFixedLengthPermutations(keywords, r.options.KeyWordLength, []string{}, &rules)
+	rules := rule.GenRulesLength(keywords, r.options.KeyWordLengthMin, r.options.KeyWordLengthMax)
 	rules = rule.RemoveSlicesWithDuplicates(rules)
 	gologger.Info().Msgf("规则数量: %d\n", len(rules))
 	err := rule.SaveCombinationsToFiles(rules, r.options.OutputRule)
