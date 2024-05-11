@@ -10,14 +10,20 @@ type KeyWord struct {
 	GivenName            []string // GivenName  名
 	FirstLetterSurname   []string // FirstLetterSurname 姓氏拼音首字母
 	FirstLetterGivenName []string // FirstLetterGivenName 名拼音首字母
-	Connector            []string // Connector   拼接字符
-	WeakPass             []string // WeakPass 弱口令
-	Year                 []string // Year 年份
-	Company              []string // Company 公司
-	Email                []string // Email 邮箱
-	Phone                []string // Phone 电话
-	City                 []string // City 城市
-	Keyboard             []string // Keyboard 键盘弱密码
+	SurnameBa            []string // Surname 姓氏拼音大写
+	GivenNameBa          []string // GivenName  名拼音大写
+	SurnameBaF           []string // Surname 姓氏拼音首字母大写
+	GivenNameBaF         []string // GivenName  名拼音首字母大写
+	//FirstLetterSurnameBa   []string // FirstLetterSurname 姓氏拼音首字母拼音大写
+	//FirstLetterGivenNameBa []string // FirstLetterGivenName 名拼音首字母拼音大写
+	Connector []string // Connector   拼接字符
+	WeakPass  []string // WeakPass 弱口令
+	Year      []string // Year 年份
+	Company   []string // Company 公司
+	Email     []string // Email 邮箱
+	Phone     []string // Phone 电话
+	City      []string // City 城市
+	Keyboard  []string // Keyboard 键盘弱密码
 }
 
 // FieldsWithValues 获取KeyWords中的存在值的字段名
@@ -110,6 +116,14 @@ func generateByRule(key *KeyWord, rule []string, prefix string, combinations *[]
 		strs = key.FirstLetterSurname
 	case "FirstLetterGivenName":
 		strs = key.FirstLetterGivenName
+	case "SurnameBa":
+		strs = key.SurnameBa
+	case "GivenNameBa":
+		strs = key.GivenNameBa
+	case "SurnameBaF":
+		strs = key.SurnameBaF
+	case "GivenNameBaF":
+		strs = key.GivenNameBaF
 	case "Connector":
 		strs = key.Connector
 	case "WeakPass":

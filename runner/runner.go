@@ -3,6 +3,7 @@ package runner
 import (
 	"github.com/projectdiscovery/gologger"
 	"github.com/yearnming/dict/pkg/rule"
+	"github.com/yearnming/dict/pkg/rule/ruletype"
 )
 
 type Runner struct {
@@ -24,6 +25,10 @@ func (r *Runner) Run() error {
 		GivenName:            r.options.GivenName,
 		FirstLetterSurname:   r.options.FirstLetterSurname,
 		FirstLetterGivenName: r.options.FirstLetterGivenName,
+		SurnameBa:            r.options.SurnameBa,
+		GivenNameBa:          r.options.GivenNameBa,
+		SurnameBaF:           r.options.SurnameBaF,
+		GivenNameBaF:         r.options.GivenNameBaF,
 		WeakPass:             r.options.WeakPass,
 		Connector:            r.options.Connector,
 		Year:                 r.options.Year,
@@ -41,6 +46,7 @@ func (r *Runner) Run() error {
 	rules = rule.RemoveSlicesWithDuplicates(rules) // 所有的子切片都不包含任何的重复元素
 	// 以防万一出现 存在同一子切片的情况可使用下面一行代码
 	//rules = rule.RemoveDuplicateSlices(rules)
+	rules = ruletype.RuleName(rules)
 	gologger.Info().Msgf("规则数量: %d\n", len(rules))
 	err := rule.SaveCombinationsToFiles(rules, r.options.OutputRule)
 	if err != nil {

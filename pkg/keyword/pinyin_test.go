@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+func TestTitleCase(t *testing.T) {
+	input := []string{"da", "zhang", "wei"}
+	output := TitleCase(input[1:])
+	gologger.Info().Msgf("首字母大写: %s", output) // 输出: Golang Is An Excellent Language
+
+	//println(NameCase(input))
+}
+
 func TestPinyin(t *testing.T) {
 	hans := "大张伟"
 	namepinyin := Pinyin(hans)
@@ -16,7 +24,9 @@ func TestPinyin(t *testing.T) {
 	//	FirstLetterSurname:   b[0],
 	//	FirstLetterGivenName: strings.Join(b[1:], ""),
 	//}
+	gologger.Info().Msgf("%+v", namepinyin.Surname)
 	gologger.Info().Msgf("%+v", namepinyin)
+
 	////
 	////默认
 	//a := pinyin.NewArgs()

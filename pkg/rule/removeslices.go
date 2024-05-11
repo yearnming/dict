@@ -88,3 +88,39 @@ func RemoveDuplicateSlices(slices [][]string) [][]string {
 
 	return result
 }
+
+// RemoveSubSlicesWithDuplicateKeywords 确保结果二维切片中的每一个子切片中都只包含关键词列表中的关键词出现至多一次
+func RemoveSubSlicesWithDuplicateKeywords(slices [][]string, keywords []string) [][]string {
+	// Step 1: 将关键词列表转为字典keywordsSet，提高关键词查找速度。
+	keywordsSet := make(map[string]struct{})
+	for _, keyword := range keywords {
+		keywordsSet[keyword] = struct{}{}
+	}
+
+	// Step 2: 创建一个空的结果切片，
+	// 利用 slices[:0] 可以使得结果切片和原有切片共享底层内存，避免了额外的内存分配。
+	result := slices[:0]
+
+	// Step 3: 开始遍历原始切片
+	for _, slice := range slices {
+		// Step 4: 创建一个字典记录已经出现过的关键词
+		appeared := make(map[string]bool)
+		valid := true // 先假设当前切片是有效的，即没有出现过的关键词
+		for _, word := range slice {
+			if _, isKeyword := keywordsSet[word]; isKeyword { // 如果当前单词是关键词
+				if len(appeared) >= 1 { // 并且这个关键词已经出现过了
+					valid = false // 那么这个切片是无效的
+					break         // 中断当前的单词遍历，开始下一个切片的处理
+				} else { // 这个关键词是首次出现
+					appeared[word] = true // 标记该关键词已经出现过
+				}
+			}
+		}
+		// 如果切片有效，那么添加到结果中
+		if valid {
+			result = append(result, slice)
+		}
+	}
+
+	return result
+}

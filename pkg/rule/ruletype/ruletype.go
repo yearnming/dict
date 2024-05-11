@@ -1,5 +1,7 @@
 package ruletype
 
+import "github.com/yearnming/dict/pkg/rule"
+
 type DictType struct {
 	Wifi      []string
 	Directory []string
@@ -8,9 +10,30 @@ type DictType struct {
 	Other     []string
 }
 
-// 预定义一些特定场景下的规则 减少无效字典生成 精准字典
+//预定义一些特定场景下的规则 减少无效字典生成 精准字典 需要变量存在、例如WiFi可能变量名字  但是lif的字典目前没发现变量会影响这个字典
 
-// Wifi
+// RuleName GenRulesLength[][]名字相关关键词 不能同时出现两个姓氏相关的关键词OR两个名相关的关键词
+func RuleName(GenRulesLength [][]string) [][]string {
+	FirstName := []string{"Surname", "FirstLetterSurname", "SurnameBa", "SurnameBaF"}
+	LastName := []string{"GivenName", "FirstLetterGivenName", "GivenNameBa", "GivenNameBaF"}
+	GenRulesLength = rule.RemoveSubSlicesWithDuplicateKeywords(GenRulesLength, FirstName)
+	GenRulesLength = rule.RemoveSubSlicesWithDuplicateKeywords(GenRulesLength, LastName)
+
+	return GenRulesLength
+}
+
+// RuleWifi 预定义规则
+// 输入参数 名字、密码长度
+// 返回值是一个规则
+func RuleWifi() {
+	// 满足一下条件可视为Wifi密码的生成规则
+	// KeyWordLength = 2,3
+	// 8<= 密码Length <= 10
+	// 从规则里面找出 	GenRulesLength[][0] = 名字相关关键词 || GenRulesLength[][]名字相关关键词 不能同时出现两个姓氏相关的关键词OR两个名相关的关键词
+	// 从规则里面找出 拼接字符 KeyWordLength = 2
+	//
+
+}
 
 // Directory 目录字典
 
