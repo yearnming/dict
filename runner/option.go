@@ -25,6 +25,10 @@ type Options struct {
 	GivenName            goflags.StringSlice // GivenName  名
 	FirstLetterSurname   goflags.StringSlice // FirstLetterSurname 姓氏拼音首字母
 	FirstLetterGivenName goflags.StringSlice // FirstLetterGivenName 名拼音首字母
+	SurnameBa            goflags.StringSlice // Surname 姓氏拼音首字母大写
+	GivenNameBa          goflags.StringSlice // GivenName  名拼音首字母大写
+	SurnameBaF           goflags.StringSlice // FirstLetterSurname 姓氏拼音首字母拼音大写
+	GivenNameBaF         goflags.StringSlice // FirstLetterGivenName 名拼音首字母拼音大写
 	Connector            goflags.StringSlice // Connector   拼接字符
 	WeakPass             goflags.StringSlice // WeakPass 弱口令
 	Year                 goflags.StringSlice // Year 年份
@@ -94,6 +98,11 @@ func (options *Options) ValidateOptions() error {
 		options.GivenName = append(options.GivenName, namepinyin.GivenName)
 		options.FirstLetterSurname = append(options.FirstLetterSurname, namepinyin.FirstLetterSurname)
 		options.FirstLetterGivenName = append(options.FirstLetterGivenName, namepinyin.FirstLetterGivenName)
+		options.SurnameBa = append(options.SurnameBa, namepinyin.SurnameBa)
+		options.GivenNameBa = append(options.GivenNameBa, namepinyin.GivenNameBa)
+		options.SurnameBaF = append(options.SurnameBaF, namepinyin.SurnameBaF)
+		options.GivenNameBaF = append(options.GivenNameBaF, namepinyin.GivenNameBaF)
+
 	}
 
 	if options.WeakPass == nil {
