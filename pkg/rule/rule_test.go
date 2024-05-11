@@ -35,7 +35,6 @@ func TestGenDir(t *testing.T) {
 	} else {
 		fmt.Println("字典保存到 ", filepath)
 	}
-
 }
 
 func TestGenerateDictionary(t *testing.T) {

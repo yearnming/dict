@@ -6,6 +6,18 @@ import (
 	"os"
 )
 
+// FilterStringsByLength 输出 关键词长度限制，生成的密码长度
+func FilterStringsByLength(strings []string, min int, max int) []string {
+	var result []string
+	for _, s := range strings {
+		length := len(s)
+		if (min == -1 || length >= min) && (max == -1 || length <= max) {
+			result = append(result, s)
+		}
+	}
+	return result
+}
+
 // SaveCombinationsToFiles 二维切片保存文件 将组合的规则保存到规则文件
 func SaveCombinationsToFiles(combinations [][]string, filename string) error {
 	file, err := os.Create(filename)

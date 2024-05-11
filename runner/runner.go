@@ -52,16 +52,18 @@ func (r *Runner) Run() error {
 	if err != nil {
 		gologger.Error().Msgf("保存组合规则失败:%s", err)
 	} else {
-		gologger.Info().Msgf("组合保存到 %s", r.options.OutputRule)
+		gologger.Info().Msgf("组合保存到: %s", r.options.OutputRule)
 	}
 	combinations := rule.GenDir(key, rules)
 	combinations = rule.Deduplicate(combinations)
-	gologger.Info().Msgf("字典长度: %d\n", len(combinations))
+	gologger.Info().Msgf("字典数量: %d\n", len(combinations))
+	combinations = rule.FilterStringsByLength(combinations, r.options.LengthMin, r.options.LengthMax)
+	gologger.Info().Msgf("限制长度后字典数量: %d\n", len(combinations))
 	err = rule.SaveCombinationsToFile(combinations, r.options.Output)
 	if err != nil {
 		gologger.Error().Msgf("保存字典失败: %s", err)
 	} else {
-		gologger.Info().Msgf("字典保存到 %s", r.options.Output)
+		gologger.Info().Msgf("字典保存到: %s", r.options.Output)
 	}
 
 	return nil

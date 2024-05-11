@@ -2,6 +2,7 @@ package rule
 
 import (
 	"fmt"
+	"github.com/projectdiscovery/gologger"
 	"reflect"
 )
 
@@ -64,6 +65,10 @@ func FieldsWithValues(kw *KeyWord) []string {
 // GenRulesLength 根据给定的关键词数量个数来生成规则
 func GenRulesLength(keywords []string, minLen, maxLen int) (combinations [][]string) {
 	//var combinations [][]string
+	if maxLen == -1 {
+		//maxLen = len(keywords)
+		gologger.Error().Msgf("参数错误关键词数量不能为 -1 ")
+	}
 	for i := minLen; i <= maxLen; i++ {
 		SelectFixedLengthPermutations(keywords, i, []string{}, &combinations)
 	}

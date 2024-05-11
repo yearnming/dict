@@ -15,7 +15,9 @@ type Options struct {
 	DictType             string              // DictType 输入字典类型
 	KeyWord              string              // KeyWord 输入关键词
 	Rules                string              // Rules 自定义关键词组合规则
-	Length               string              // Length 关键词长度限制，生成的密码长度
+	Length               goflags.StringSlice // Length 关键词长度限制，生成的密码长度
+	LengthMin            int                 // KeyWordLength 关键词长度限制，生成的密码长度，最少
+	LengthMax            int                 // KeyWordLength 关键词长度限制，生成的密码长度，最大
 	Output               string              // Output 保存文件
 	KeyWordLength        goflags.StringSlice // KeyWordLength 关键词规则数量限制，两个关键词组合，三个关键词组合
 	KeyWordLengthMin     int                 // KeyWordLength 关键词规则数量限制，最少
@@ -66,7 +68,7 @@ func ParseOptions() *Options {
 		flagSet.StringVarP(&options.DictType, "dicttype", "dt", "wifi", "输入字典类型"),
 		//flagSet.StringVarP(&options.KeyWord, "keyword", "key", "", "输入关键词"),
 		flagSet.StringVarP(&options.Rules, "rule", "r", "", "自定义关键词组合规则"),
-		flagSet.StringVarP(&options.Length, "length", "l", "", "关键词长度限制，生成的密码长度"),
+		flagSet.StringSliceVarP(&options.Length, "length", "l", nil, "关键词长度限制，生成的密码长度", goflags.NormalizedStringSliceOptions),
 		flagSet.StringSliceVarP(&options.KeyWordLength, "KeyWordLength", "kwl", nil, "关键词规则数量限制，两个关键词组合，三个关键词组合", goflags.NormalizedStringSliceOptions),
 	)
 	flagSet.CreateGroup("output", "输出",
@@ -145,46 +147,53 @@ func (options *Options) ValidateOptions() error {
 		options.OutputRule = timestampedFilename
 	}
 
-	if options.KeyWordLength == nil {
-		options.KeyWordLength = []string{"3"}
-	} else if len(options.KeyWordLength) == 2 {
-
-	} else {
-
+	err := options.parseKeyWordLength(options.KeyWordLength)
+	if err != nil {
+		gologger.Error().Msgf("解析长度限制时出错: %s\n", err)
+		panic(err)
 	}
-
-	// 判断KeyWordLength格式
-	switch true {
-	case options.KeyWordLength == nil:
-		options.KeyWordLength = []string{"3"}
-		break
-	case len(options.KeyWordLength) == 1:
-		if !isNumeric(options.KeyWordLength[0]) {
-			return fmt.Errorf("长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
-		} else {
-			num1, err1 := strconv.Atoi(options.KeyWordLength[0])
-			if err1 != nil {
-				return fmt.Errorf("长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
-			}
+	if options.KeyWordLength == nil {
+		options.KeyWordLengthMin = 3
+		options.KeyWordLengthMax = 3
+	} else {
+		if len(options.KeyWordLength) == 1 {
+			num1, _ := strconv.Atoi(options.KeyWordLength[0])
 			options.KeyWordLengthMin = num1
 			options.KeyWordLengthMax = num1
-		}
-		break
-	case len(options.KeyWordLength) == 2:
-		if isNumeric(options.KeyWordLength[0]) && isNumeric(options.KeyWordLength[1]) {
-			num1, err1 := strconv.Atoi(options.KeyWordLength[0])
-			num2, err2 := strconv.Atoi(options.KeyWordLength[1])
-			if err1 != nil || err2 != nil || num1 > num2 {
-				return fmt.Errorf("KeyWordLength长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
-			}
+		} else {
+			num1, _ := strconv.Atoi(options.KeyWordLength[0])
+			num2, _ := strconv.Atoi(options.KeyWordLength[1])
 			options.KeyWordLengthMin = num1
 			options.KeyWordLengthMax = num2
-		} else {
-			return fmt.Errorf("KeyWordLength长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
 		}
-	default:
-		return fmt.Errorf("KeyWordLength长度得为1或2，且为数字，例如: \"3\", \"2,3\"")
 	}
+
+	//gologger.Info().Msgf("关键词规则数量限制: %v", options.KeyWordLength)
+	//gologger.Info().Msgf("关键词规则数量限制: \"%d\"到\"%d\"", options.KeyWordLengthMin, options.KeyWordLengthMax)
+
+	err = options.parseKeyWordLength(options.Length)
+	if err != nil {
+		gologger.Error().Msgf("解析长度限制时出错: %s\n", err)
+		panic(err)
+	}
+
+	if options.Length == nil {
+		options.LengthMin = -1
+		options.LengthMax = -1
+	} else {
+		if len(options.Length) == 1 {
+			num1, _ := strconv.Atoi(options.Length[0])
+			options.LengthMin = num1
+			options.LengthMax = num1
+		} else {
+			num1, _ := strconv.Atoi(options.Length[0])
+			num2, _ := strconv.Atoi(options.Length[1])
+			options.LengthMin = num1
+			options.LengthMax = num2
+		}
+	}
+	//gologger.Info().Msgf("密码长度限制: %v", options.Length)
+	//gologger.Info().Msgf("密码长度限制: \"%d\"到\"%d\"", options.LengthMin, options.LengthMax)
 
 	return nil
 }
@@ -193,4 +202,31 @@ func isNumeric(s string) bool {
 	// 正则表达式匹配一个或多个数字
 	re := regexp.MustCompile(`^\d+$`)
 	return re.MatchString(s)
+}
+
+func (options *Options) parseKeyWordLength(Length []string) error {
+	switch len(Length) {
+	case 0:
+		Length = []string{"3"}
+	case 1, 2:
+		if Length[1] == "-1" {
+			break
+		}
+		for _, str := range Length {
+			if !isNumeric(str) || str == "-1" {
+				return fmt.Errorf("长度得为 1 或 2，且为数字 you -1，例如: \"3\", \"2,3\"")
+			}
+		}
+		num1, _ := strconv.Atoi(Length[0])
+		num2 := num1
+		if len(Length) == 2 {
+			num2, _ = strconv.Atoi(Length[1])
+		}
+		if num1 > num2 {
+			return fmt.Errorf("KeyWordLength 长度得为 1 或 2，且为数字，例如: \"3\", \"2,3\"")
+		}
+	default:
+		return fmt.Errorf("KeyWordLength 长度得为 1 或 2，且为数字，例如: \"3\", \"2,3\"")
+	}
+	return nil
 }
