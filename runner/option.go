@@ -68,7 +68,7 @@ func ParseOptions() *Options {
 		flagSet.StringVarP(&options.DictType, "dicttype", "dt", "wifi", "输入字典类型"),
 		//flagSet.StringVarP(&options.KeyWord, "keyword", "key", "", "输入关键词"),
 		flagSet.StringVarP(&options.Rules, "rule", "r", "", "自定义关键词组合规则"),
-		flagSet.StringSliceVarP(&options.Length, "length", "l", nil, "关键词长度限制，生成的密码长度", goflags.NormalizedStringSliceOptions),
+		flagSet.StringSliceVarP(&options.Length, "length", "l", nil, "生成的密码长度限制,-1不限制最大长度,例如：8,10 | 8,-1", goflags.NormalizedStringSliceOptions),
 		flagSet.StringSliceVarP(&options.KeyWordLength, "KeyWordLength", "kwl", nil, "关键词规则数量限制，两个关键词组合，三个关键词组合", goflags.NormalizedStringSliceOptions),
 	)
 	flagSet.CreateGroup("output", "输出",
