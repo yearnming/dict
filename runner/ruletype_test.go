@@ -1,12 +1,12 @@
-package ruletype
+package runner
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/projectdiscovery/gologger"
 	"github.com/yearnming/dict/pkg/keyword"
 	"github.com/yearnming/dict/pkg/rule"
-	"github.com/yearnming/dict/runner"
-	"testing"
 )
 
 //	Surname              []string // Surname 姓氏
@@ -36,7 +36,7 @@ func TestKwl(t *testing.T) {
 	gologger.Info().Msgf("清理子切片中存在的重复元素后的长度 : %d\n", len(combinations))
 	combinations = rule.RemoveDuplicateSlices(combinations)
 	gologger.Info().Msgf("移除存在重复的子切片后的长度: %d\n", len(combinations))
-	filepathrule := "WIFI规则.txt"
+	filepathrule := "WIFI规则TestKwl.txt"
 	err := rule.SaveCombinationsToFiles(combinations, filepathrule)
 	if err != nil {
 		fmt.Println("保存组合规则失败:", err)
@@ -50,7 +50,7 @@ func TestRuleName(t *testing.T) {
 	hans := "大张伟"
 
 	namepinyin := keyword.Pinyin(hans)
-	r := &runner.Options{}
+	r := &Options{}
 	r.Surname = append(r.Surname, namepinyin.Surname)
 	r.GivenName = append(r.GivenName, namepinyin.GivenName)
 	r.FirstLetterSurname = append(r.FirstLetterSurname, namepinyin.FirstLetterSurname)
@@ -79,9 +79,9 @@ func TestRuleName(t *testing.T) {
 	gologger.Info().Msgf("清理子切片中存在的重复元素后的长度 : %d\n", len(combinations))
 	combinations = rule.RemoveDuplicateSlices(combinations)
 	gologger.Info().Msgf("移除存在重复的子切片后的长度: %d\n", len(combinations))
-	combinations = RuleName(combinations)
+	combinations = rule.RuleName(combinations)
 	gologger.Info().Msgf("添加规则名称后的长度: %d\n", len(combinations))
-	filepathrule := "WIFI规则.txt"
+	filepathrule := "WIFI规则TestRuleName.txt"
 	err := rule.SaveCombinationsToFiles(combinations, filepathrule)
 	if err != nil {
 		fmt.Println("保存组合规则失败:", err)

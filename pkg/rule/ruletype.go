@@ -1,6 +1,4 @@
-package ruletype
-
-import "github.com/yearnming/dict/pkg/rule"
+package rule
 
 type DictType struct {
 	Wifi      []string
@@ -16,8 +14,8 @@ type DictType struct {
 func RuleName(GenRulesLength [][]string) [][]string {
 	FirstName := []string{"Surname", "FirstLetterSurname", "SurnameBa", "SurnameBaF"}
 	LastName := []string{"GivenName", "FirstLetterGivenName", "GivenNameBa", "GivenNameBaF"}
-	GenRulesLength = rule.RemoveSubSlicesWithDuplicateKeywords(GenRulesLength, FirstName)
-	GenRulesLength = rule.RemoveSubSlicesWithDuplicateKeywords(GenRulesLength, LastName)
+	GenRulesLength = RemoveSubSlicesWithDuplicateKeywords(GenRulesLength, FirstName)
+	GenRulesLength = RemoveSubSlicesWithDuplicateKeywords(GenRulesLength, LastName)
 
 	return GenRulesLength
 }

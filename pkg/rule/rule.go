@@ -2,8 +2,9 @@ package rule
 
 import (
 	"fmt"
-	"github.com/projectdiscovery/gologger"
 	"reflect"
+
+	"github.com/projectdiscovery/gologger"
 )
 
 type KeyWord struct {
